@@ -1,0 +1,42 @@
+<configuration>
+
+    <conversionRule conversionWord="coloredLevel" converterClass="play.api.Logger$ColoredLevel"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS dd.MM.yyyy} %-5level [%thread] [%logger{36}] : %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+
+    <appender name="FILE-AUDIT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/log.log</file>
+        <append>false</append>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d{HH:mm:ss.SSS dd.MM.yyyy} %-5level [%thread] [%logger{36}] : %msg%n</Pattern>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/archived/debug.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <!--
+      The logger name is typically the Java/Scala package name.
+      This configures the log level to log at for a package and its children packages.
+    -->
+    <logger name="play" level="INFO"/>
+    <logger name="application" level="INFO"/>
+    <logger name="org.pac4j.play" level="DEBUG"/>
+
+    <root level="ALL">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE-AUDIT"/>
+    </root>
+
+</configuration>
