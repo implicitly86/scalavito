@@ -2,11 +2,22 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
-GET         /                    controllers.Application.index
-GET         /lol                 controllers.Application.lol
-POST        /login               controllers.AuthController.login
-POST        /signup              controllers.AuthController.signup
+# Роутинг контроллера приложения
+GET           /                         controllers.Application.index
+GET           /lol                      controllers.Application.lol
+
+# Роутинг контроллера авторизации
+POST          /login                    controllers.AuthController.login
+POST          /signup                   controllers.AuthController.signup
+
+# Роутинг контроллера пользователей
+GET           /user/:id                 controllers.UserController.findUser(id: Long)
+
+# Роутинг контроллера объявлений
+GET           /advert/:id               controllers.AdvertController.findAdvert(id: Long)
+DELETE        /advert/:id               controllers.AdvertController.deleteAdvert(id: Long)
+POST          /advert                   controllers.AdvertController.saveAdvert
+GET           /advertsByUser/:id        controllers.AdvertController.findUserAdverts(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file        controllers.Assets.at(path="/public", file)
+GET           /assets/*file             controllers.Assets.at(path="/public", file)

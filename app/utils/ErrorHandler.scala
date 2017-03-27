@@ -1,6 +1,6 @@
 package utils
 
-import javax.inject.Inject
+import javax.inject.{Inject, Provider}
 
 import com.mohiva.play.silhouette.api.actions.SecuredErrorHandler
 import play.api.http.DefaultHttpErrorHandler
@@ -9,7 +9,7 @@ import play.api.libs.json.Json
 import play.api.mvc.RequestHeader
 import play.api.mvc.Results._
 import play.api.routing.Router
-import play.api.{Configuration, Logger, OptionalSourceMapper}
+import play.api.{Configuration, Environment, Logger, OptionalSourceMapper}
 
 import scala.concurrent.Future
 
@@ -18,10 +18,10 @@ import scala.concurrent.Future
   */
 class ErrorHandler @Inject()(
                                     val messagesApi: MessagesApi,
-                                    env: play.api.Environment,
+                                    env: Environment,
                                     config: Configuration,
                                     sourceMapper: OptionalSourceMapper,
-                                    router: javax.inject.Provider[Router])
+                                    router: Provider[Router])
         extends DefaultHttpErrorHandler(env, config, sourceMapper, router) {
 
     import ErrorHandler.logger
@@ -101,6 +101,7 @@ object ErrorHandler {
             logger.warn(s"Not authorized error occurred. Request ${request.path}")
             Future.successful(Forbidden(Json.obj("message" -> "not authorized")))
         }
+
     }
 
 }

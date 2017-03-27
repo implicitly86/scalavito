@@ -1,6 +1,5 @@
 package models.daos
 
-import java.util.UUID
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.LoginInfo
@@ -49,7 +48,7 @@ class UserDAOImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvid
             logger.info("User in cache not present")
             db.run(userQuery.result.headOption).map { dbUserOption =>
                 dbUserOption.map { dbUser =>
-                    val user = User(UUID.fromString(dbUser.userID), loginInfo, dbUser.firstName, dbUser.lastName, dbUser.email)
+                    val user = User(dbUser.userID, loginInfo, dbUser.firstName, dbUser.lastName, dbUser.email)
                     cache.set(query, user, 30)
                     user
                 }
@@ -63,9 +62,9 @@ class UserDAOImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvid
       * @param userID идентификационный номер пользователя для поиска.
       * @return пользователя, если найден, None в противном случае.
       */
-    def find(userID: UUID): Future[Option[User]] = {
+    def find(userID: Long): Future[Option[User]] = {
         val query = for {
-            dbUser <- slickUsers.filter(_.id === userID.toString)
+            dbUser <- slickUsers.filter(_.id === userID)
             dbUserLoginInfo <- slickUserLoginInfos.filter(_.userID === dbUser.id)
             dbLoginInfo <- slickLoginInfos.filter(_.id === dbUserLoginInfo.loginInfoId)
         } yield (dbUser, dbLoginInfo)
@@ -73,7 +72,7 @@ class UserDAOImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvid
             resultOption.map {
                 case (user, loginInfo) =>
                     User(
-                        UUID.fromString(user.userID),
+                        user.userID,
                         LoginInfo(loginInfo.providerID, loginInfo.providerKey),
                         user.firstName,
                         user.lastName,
@@ -89,7 +88,7 @@ class UserDAOImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvid
       * @return сохраненный пользователь.
       */
     def save(user: User): Future[User] = {
-        val dbUser = DBUser(user.userID.toString, user.firstName, user.lastName, user.email)
+        val dbUser = DBUser(None, user.firstName, user.lastName, user.email)
         val dbLoginInfo = DBLoginInfo(None, user.loginInfo.providerID, user.loginInfo.providerKey)
         // We don't have the LoginInfo id so we try to get it first.
         // If there is no LoginInfo yet for this user we retrieve the id on insertion.
@@ -106,9 +105,9 @@ class UserDAOImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvid
         }
         // combine database actions to be run sequentially
         val actions = (for {
-            _ <- slickUsers.insertOrUpdate(dbUser)
+            user <- slickUsers.returning(slickUsers.map(_.id)) += dbUser
             loginInfo <- loginInfoAction
-            _ <- slickUserLoginInfos += DBUserLoginInfo(dbUser.userID, loginInfo.id.get)
+            _ <- slickUserLoginInfos += DBUserLoginInfo(user, loginInfo.id.get)
         } yield ()).transactionally
         // run actions and return user afterwards
         db.run(actions).map(_ => user)

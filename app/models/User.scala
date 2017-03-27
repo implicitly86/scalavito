@@ -1,7 +1,5 @@
 package models
 
-import java.util.UUID
-
 import com.mohiva.play.silhouette.api.{Identity, LoginInfo}
 import play.api.libs.json.{Json, OFormat}
 
@@ -17,7 +15,7 @@ import play.api.libs.json.{Json, OFormat}
   * @author EMurzakaev@it.ru.
   */
 case class User(
-                       userID: UUID,
+                       userID: Option[Long],
                        loginInfo: LoginInfo,
                        firstName: String,
                        lastName: String,

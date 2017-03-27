@@ -1,7 +1,5 @@
 package models.daos
 
-import java.util.UUID
-
 import com.mohiva.play.silhouette.api.LoginInfo
 import models.User
 
@@ -29,7 +27,7 @@ trait UserDAO {
       * @param userID идентификационный номер пользователя для поиска.
       * @return пользователя, если найден, None в противном случае.
       */
-    def find(userID: UUID): Future[Option[User]]
+    def find(userID: Long): Future[Option[User]]
 
     /**
       * Сохранение пользователя.

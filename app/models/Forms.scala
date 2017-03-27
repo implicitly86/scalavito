@@ -22,6 +22,14 @@ case class SignUpForm(firstName: String, lastName: String, email: String, passwo
 case class LoginForm(email: String, password: String, rememberMe: Boolean)
 
 /**
+  * Форма добавления нового объявления.
+  *
+  * @param title       заголовок объявления.
+  * @param description описание объявления.
+  */
+case class AdvertForm(title: String, description: String)
+
+/**
   * Объект-комнаьюн SignUpForm.
   *
   * Содержит формат для case класса SignUpForm.
@@ -37,4 +45,13 @@ object SignUpForm {
   */
 object LoginForm {
     implicit val loginFormFormat: OFormat[LoginForm] = Json.format[LoginForm]
+}
+
+/**
+  * Объект-комнаьюн AdvertForm.
+  *
+  * Содержит формат для case класса AdvertForm.
+  */
+object AdvertForm {
+    implicit val loginFormFormat: OFormat[AdvertForm] = Json.format[AdvertForm]
 }

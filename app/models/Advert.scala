@@ -1,7 +1,5 @@
 package models
 
-import java.util.UUID
-
 import play.api.libs.json.{Json, OFormat}
 
 /**
@@ -11,7 +9,7 @@ import play.api.libs.json.{Json, OFormat}
   *
   * @author EMurzakaev@it.ru.
   */
-case class Advert(id: UUID, author: String, category: Category, title: String, description: String)
+case class Advert(id: Option[Long], authorID: Long, title: String, description: String)
 
 /**
   * Объект-компаньен.
