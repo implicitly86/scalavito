@@ -78,15 +78,9 @@ class AdvertController @Inject()(
       */
     def deleteAdvert(id: Long) = silhouette.SecuredAction(handler).async { implicit request =>
         val userID = request.identity.userID.getOrElse(-1l)
-        advertDAO.findUserAdverts(userID).flatMap { list =>
-            if (list.exists(_.id.contains(id))) {
-                advertDAO.delete(id).map {
-                    case Some(_) => Ok
-                    case None => BadRequest
-                }
-            } else {
-                Future.successful(BadRequest)
-            }
+        advertDAO.delete(id, userID).flatMap {
+            case Some(_) => Future.successful(Ok)
+            case None => Future.successful(BadRequest)
         }
     }
 

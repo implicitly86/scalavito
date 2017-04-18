@@ -40,5 +40,13 @@ trait AdvertDAO {
       * @return экземпляр Option, содержащий объявление Advert в случае успешного удаления объявления по id.
       */
     def delete(id: Long): Future[Option[Int]]
+    /**
+      * Удаление объявления по id.
+      *
+      * @param advertId идентификационный номер объявления.
+      * @param userId   идентификационный номер пользователя.
+      * @return экземпляр Option, содержащий объявление Advert в случае успешного удаления объявления по id.
+      */
+    def delete(advertId: Long, userId: Long): Future[Option[Int]]
 
 }

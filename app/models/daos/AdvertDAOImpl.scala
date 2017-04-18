@@ -81,5 +81,20 @@ class AdvertDAOImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProv
             case x => Future.successful(Some(x))
         }
     }
+    /**
+      * Удаление объявления по id.
+      *
+      * @param advertId идентификационный номер объявления.
+      * @param userId   идентификационный номер пользователя.
+      * @return экземпляр Option, содержащий объявление Advert в случае успешного удаления объявления по id.
+      */
+    override def delete(advertId: Long, userId: Long) = {
+        logger.debug(s"Delete advert with advert id $advertId and user id $userId")
+        val request = slickAdverts.filter(x => x.id === advertId && x.author === userId).delete
+        db.run(request).flatMap {
+            case 0 => Future.successful(None)
+            case x => Future.successful(Some(x))
+        }
+    }
 
 }

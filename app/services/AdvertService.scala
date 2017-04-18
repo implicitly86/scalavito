@@ -2,7 +2,7 @@ package services
 
 import java.util.UUID
 
-import models.{Advert, Category}
+import models.Advert
 
 import scala.concurrent.Future
 
@@ -31,13 +31,5 @@ trait AdvertService {
       * @return объявление, обернутое в Option
       */
     def find(id: UUID): Future[Option[Advert]]
-
-    /**
-      * Получить список объявлений в заданной категории.
-      *
-      * @param category категория объявлений.
-      * @return список объявлений в заданной категории.
-      */
-    def advertsWithCategory(category: Category): Future[List[Advert]]
 
 }
